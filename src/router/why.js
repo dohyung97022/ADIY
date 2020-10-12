@@ -7,7 +7,7 @@ import youtubeSvg from "../social-media-svg/youtube.svg";
 import BarChart from "../chart/bar";
 import SearchBar from "../components/search-bar";
 
-const why = () => {
+const Why = () => {
   return (
     <React.Fragment>
       <header className="stk z-i-1">
@@ -101,4 +101,4 @@ const why = () => {
   );
 };
 
-export default why;
+export default Why;
