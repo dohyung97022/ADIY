@@ -1,0 +1,24 @@
+:root {
+  --drp-dwn-param-w: min(26vw, 120px);
+  --drp-dwn-payment-w: min(42vw, 200px);
+  --drp-dwn-payment-w: 200px;
+}
+.drp-dwn-param {
+  width: var(--drp-dwn-param-w);
+}
+.drp-dwn-payment {
+  width: var(--drp-dwn-payment-w);
+}
+.drp-dwn-cnt {
+  border-radius: 0 0 var(--radius-main-border) var(--radius-main-border);
+  background-color: var(--color-font-1);
+}
+.drp-dwn-btn {
+  width: 100%;
+}
+.drp-dwn-param:hover .drp-dwn-cnt {
+  display: block;
+}
+.drp-dwn-payment:hover .drp-dwn-cnt {
+  display: block;
+}
