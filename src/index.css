@@ -160,6 +160,10 @@ h4 {
   background: var(--color-font-1);
   color: var(--color-main);
 }
+.btn-5 {
+  background: var(--color-orange);
+  color: var(--color-font-1);
+}
 .btn-svg img {
   width: 90%;
   height: 90%;
@@ -422,6 +426,9 @@ input[type="range"]::-moz-range-thumb {
 }
 .mg-r-3 {
   margin-right: var(--margin-3);
+}
+.mg-r-4 {
+  margin-right: var(--margin-4);
 }
 .mg-l-0 {
   margin-left: var(--margin-0);

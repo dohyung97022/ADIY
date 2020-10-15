@@ -50,11 +50,24 @@ const PayInfo = () => {
       </header>
       
     <div className="txt-cnt why-width mg-auto">
-    <h3 className="c-font-1 mg-b-3 mg-t-2">Payment Information</h3>
+      <h3 className="c-font-1 mg-b-3 mg-t-3">Payment Information</h3>
       <div className="btn-4 mg-b-2 mg-t-2">
-        <img className="pay-img mg-t-16" src={payInfoImg} alt="payInfoImg" />
+        <img className="pay-img mg-t-1 mg-b-2" src={payInfoImg} alt="payInfoImg" />
+        <hr className="hr-1"/>
+        <p>fdsafdasfdsafdsa</p>
+        <p>fdsafdasfdsafdsa</p>
+        <p>fdsafdasfdsafdsa</p>
+        <p>fdsafdasfdsafdsa</p>
+        <p>fdsafdasfdsafdsa</p>
       </div>
       <div className="flex-col">
+      </div>
+    </div>
+    <div className="rlt max-main-w opt">
+      <div className="abs abs-cntr abs-r">
+          <Link to="login">
+            <button className="btn-5 mg-r-4">구독취소</button>
+          </Link>
       </div>
     </div>
     </React.Fragment>
