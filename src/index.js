@@ -10,6 +10,7 @@ import Login from "./router/login";
 import SignUp from "./router/sign-up";
 import Payment from "./router/payment";
 import Profile from "./router/profile";
+import PayInfo from "./router/pay-info";
 import "chartjs-plugin-datalabels";
 
 export const GlobalContext = createContext(null);
@@ -46,6 +47,7 @@ const Index = () => {
           <Route path="/signup" component={SignUp} />
           <Route path="/payment" component={Payment} />
           <Route path="/profile" component={Profile} />
+          <Route path="/payinfo" component={PayInfo} />
         </GlobalContext.Provider>
       </Switch>
     </Router>
