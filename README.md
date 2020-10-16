@@ -1,8 +1,8 @@
 # ADIY
 ads are expensive so do it yourself.
 
-## 사업 계획서   
-[Section Name](readme.md#사업-계획서)
-## 진행상황   
+## [사업 계획서](사업-계획서.md)   
 
-## 부서   
+## [진행기록](진행기록.md)   
+
+## [부서](부서.md)      
