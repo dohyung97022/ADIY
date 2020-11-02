@@ -76,10 +76,7 @@
   --grid-img-w: 29%;
 
   --grid-item-w: calc((var(--main-width) - var(--margin-item) * 10) / 5);
-  --flex-item-w: min(
-    18vw,
-    calc((var(--main-width) - var(--margin-item) * 10) / 5)
-  );
+  --flex-item-w: min(18vw, calc((var(--main-width) - var(--margin-item) * 10) / 5));
   --flex-itm-grap-w: 90%;
   --grap-p-w: min(7vw, 70%);
 
@@ -334,9 +331,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .grid-cnl-chart {
   display: grid;
-  grid-template-columns: var(--grid-channel-w) var(--grid-channel-w) var(
-      --grid-channel-w
-    );
+  grid-template-columns: var(--grid-channel-w) var(--grid-channel-w) var(--grid-channel-w);
 }
 .grid-cnl-item-chart {
   height: var(--cnl-grid-chart-h);
@@ -640,7 +635,7 @@ input[type="range"]::-moz-range-thumb {
   --login-left: 5%;
   --login-top-txt-padding: 3px;
   --login-width: min(55vw, 430px);
-  --size-sign-svg: min(7vw, 50px);
+  --size-sign-svg: min(6vw, 40px);
 }
 .w-sign-svg {
   width: var(--size-sign-svg);
