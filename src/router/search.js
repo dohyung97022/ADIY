@@ -153,7 +153,6 @@ const Search = () => {
       } catch (e) {}
     }
     setChannels(pushChannels);
-    // setnumButtons(numButtons);
   }, [p, json]);
 
   return (

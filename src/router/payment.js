@@ -150,29 +150,6 @@ const payment = () => {
 
 export default payment;
 
-// cli
-// sb-9deem2517378@personal.example.com
-// e$T'07j(
-
-// dev
-// sb-k0k7j2499120@business.example.com
-// 0Q&[e8b[
-// client id = AWdgHKJwUBzpP136gAaQwmJLztXlsWbxYFeETdgdrWEQIG3Pm5SkEIT9_GiEWErwz0PT4l9wZpCl_4cD
-// secret key = EMBjX-Yx94V4tBYDNorLfAlmo32QhBQbdARAoFQiVFRsp039xaD7oRWuP96lRNemrGH24qSM9RHO4T7d
-// make the keys encripted and proxy it to make it decripted
-// make the proxy call available only in this specific website
-// return the credencials from the proxy
-
-// change the client_id:secret key
-// curl -v POST https://api.sandbox.paypal.com/v1/oauth2/token -H "Accept:application/json" -H "Accept-Language: en_US" -u "AWdgHKJwUBzpP136gAaQwmJLztXlsWbxYFeETdgdrWEQIG3Pm5SkEIT9_GiEWErwz0PT4l9wZpCl_4cD:EMBjX-Yx94V4tBYDNorLfAlmo32QhBQbdARAoFQiVFRsp039xaD7oRWuP96lRNemrGH24qSM9RHO4T7d" -d "grant_type=client_credentials"
-// -H header
-// -u, --user <user:password> Server user and password
-
-// access token
-// A21AAEFzLJHpxDYiUa9tTqWC4lo2WdAYRTMT-l09PodB6giLWqWnZJgonCJ-Z8tXOJGGlBsgFGw9H1InNLfz5qgycP5CN-n1Q
-
-// call curl by https://reqbin.com/curl
-
 // product id PROD-23D66300LE1925216
 //         "href": "https://api.sandbox.paypal.com/v1/catalogs/products/PROD-23D66300LE1925216",
 //         "rel": "self",
@@ -182,4 +159,4 @@ export default payment;
 
 // plan id P-9FJ0814303766574HL4BSGHY
 
-// subscription I-KK62WJR03EHV
+// subscription example I-KK62WJR03EHV

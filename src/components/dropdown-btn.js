@@ -10,7 +10,6 @@ const dropDownButton = (props) => {
   } else if (type === "payment") {
     classAddText = "drp-dwn-payment";
   }
-
   return (
     <div className={"rlt inl-blc " + classAddText}>
       <button className="btn-1 drp-dwn-btn">
