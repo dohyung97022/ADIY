@@ -13,26 +13,37 @@ import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
 import SearchBar from "../components/search-bar";
 import DropDownBtn from "../components/dropdown-btn";
+import { AuthContext } from "../firebase/FirebaseContext";
+import { firebaseApp } from "../firebase/Firebase";
 
 const Search = () => {
   const query = new URLSearchParams(window.location.search).get("q");
-
-  const [json, setJson] = useState();
   const [channels, setChannels] = useState([]);
-
   const { chartIntData, setChartIntData, chartStrData, setChartStrData, channelData, setChannelData } = useContext(
     GlobalContext
   );
   const [csd, setCsd] = useState(chartStrData);
   const [cid, setCid] = useState(chartIntData);
-
   const [cpv, setCpv] = useState(5);
   const [vsc, setVsc] = useState(1000);
   const [pp, setPp] = useState(6000);
   const [subs, setSubs] = useState("");
   const [avrViews, setAvrViews] = useState("");
   const [totalViews, setTotalViews] = useState("");
-  const [p, setP] = useState(0);
+  const [page, setPage] = useState(0);
+
+  const currentUser = useContext(AuthContext);
+  const LoginAndRegister = (
+  <React.Fragment><Link to="/signin">
+  <button className="btn-1 mg-r-2">Login</button>
+  </Link>
+  <Link to="/signup">
+  <button className="btn-1 mg-r-2">Register</button>
+  </Link></React.Fragment>)
+  const Logout = (
+    <React.Fragment>
+    <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+    </React.Fragment>)
 
   function removeChartDataIndex(i) {
     csd.splice(i, 1);
@@ -66,94 +77,87 @@ const Search = () => {
   };
 
   useEffect(() => {
+    //header 에다가 uid 보내기
     fetch(
-      "http://ec2-54-161-234-228.compute-1.amazonaws.com:3000/search?search=" + query + subs + avrViews + totalViews
+      `http://ec2-54-161-234-228.compute-1.amazonaws.com:3000/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`
     )
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        setJson(json);
-        setP(0);
-      });
-  }, [query, subs, avrViews, totalViews]);
-
-  useEffect(() => {
-    if (json === undefined) {
-      return;
-    }
-    var pushChannels = [];
-    for (let i = 0; i < Object.keys(json).length; i++) {
-      try {
-        pushChannels.push(
-          <div
-            className="grid-itm bgc-itm"
-            key={i}
-            onClick={() => {
-              if (!csd.includes(json[i].title) && csd.length <= 4) {
-                csd.push(json[i].title);
-                setChartStrData(csd);
-                setCsd(csd);
-
-                cid.push(Number(json[i].avr_views));
-                setChartIntData([...cid]);
-                setCid(cid);
-              }
-            }}
-          >
-            <img className="grid-img mg-t-16" src={json[i].chan_img} alt="brandImg" />
-            <h1 className="txt-dot mg-l-1 mg-r-1">{decode(json[i].title)}</h1>
-            <p className="mg-auto mg-t-8 mg-l-0 mg-r-0 txt-dot">{decodeURIComponent(json[i].about)}</p>
-            <Link to={"/channel?q=" + json[i].channel}>
-              <button
-                className="btn-3 mg-t-8"
+        var pushChannels = [];
+        for (let i = 0; i < Object.keys(json).length; i++) {
+          try {
+            pushChannels.push(
+              <div
+                className="grid-itm bgc-itm"
+                key={i}
                 onClick={() => {
-                  setChannelData(json[i]);
+                  if (!csd.includes(json[i].title) && csd.length <= 4) {
+                    csd.push(json[i].title);
+                    setChartStrData(csd);
+                    setCsd(csd);
+    
+                    cid.push(Number(json[i].avr_views));
+                    setChartIntData([...cid]);
+                    setCid(cid);
+                  }
                 }}
               >
-                View Details
-              </button>
-            </Link>
-            <div className="grid-itm-info mg-t-8 mg-b-8">
-              <div>
-                <h1>{intFormat(json[i].subs, "명")}</h1>
-                <p className="mg-auto">구독자</p>
+                <img className="grid-img mg-t-16" src={json[i].chan_img} alt="brandImg" />
+                <h1 className="txt-dot mg-l-1 mg-r-1">{decode(json[i].title)}</h1>
+                <p className="mg-auto mg-t-8 mg-l-0 mg-r-0 txt-dot">{decodeURIComponent(json[i].about)}</p>
+                {/* <Link to={"/channel?q=" + json[i].channel}>
+                  <button
+                    className="btn-3 mg-t-8"
+                    onClick={() => {
+                      setChannelData(json[i]);
+                    }}
+                  >
+                    View Details
+                  </button>
+                </Link> */}
+                <div className="grid-itm-info mg-t-8 mg-b-8">
+                  <div>
+                    <h1>{intFormat(json[i].subs, "명")}</h1>
+                    <p className="mg-auto">구독자</p>
+                  </div>
+                  <div>
+                    <h1>{intFormat(json[i].ttl_views, "회")}</h1>
+                    <p className="mg-auto">총조회수</p>
+                  </div>
+                  <div>
+                    <h1>{intFormat(json[i].avr_views, "회")}</h1>
+                    <p className="mg-auto">평균조회수</p>
+                  </div>
+                </div>
+                <hr className="hr-1" />
+                <div className="grid-itm-info mg-t-8 mg-b-8">
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
+                    <img src={twitchSvg} style={checkValidStyle(json[i])} alt="twitchSvg"></img>
+                  </button>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
+                    <img src={instagramSvg} style={checkValidStyle(json[i])} alt="instagramSvg"></img>
+                  </button>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
+                    <img src={facebookSvg} style={checkValidStyle(json[i])} alt="facebookSvg"></img>
+                  </button>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
+                    <img src={twitterSvg} style={checkValidStyle(json[i])} alt="twitterSvg"></img>
+                  </button>
+                  <button className="btn-svg">
+                    <img src={emailSvg} style={checkValidStyle(getEmailFromString(json[i].about))} alt="emailSvg"></img>
+                  </button>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i].chan_url)}>
+                    <img src={youtubeSvg} style={checkValidStyle(json[i].chan_url)} alt="youtubeSvg"></img>
+                  </button>
+                </div>
               </div>
-              <div>
-                <h1>{intFormat(json[i].ttl_views, "회")}</h1>
-                <p className="mg-auto">총조회수</p>
-              </div>
-              <div>
-                <h1>{intFormat(json[i].avr_views, "회")}</h1>
-                <p className="mg-auto">평균조회수</p>
-              </div>
-            </div>
-            <hr className="hr-1" />
-            <div className="grid-itm-info mg-t-8 mg-b-8">
-              <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                <img src={twitchSvg} style={checkValidStyle(json[i])} alt="twitchSvg"></img>
-              </button>
-              <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                <img src={instagramSvg} style={checkValidStyle(json[i])} alt="instagramSvg"></img>
-              </button>
-              <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                <img src={facebookSvg} style={checkValidStyle(json[i])} alt="facebookSvg"></img>
-              </button>
-              <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                <img src={twitterSvg} style={checkValidStyle(json[i])} alt="twitterSvg"></img>
-              </button>
-              <button className="btn-svg">
-                <img src={emailSvg} style={checkValidStyle(getEmailFromString(json[i].about))} alt="emailSvg"></img>
-              </button>
-              <button className="btn-svg" onClick={() => openLinkIfValid(json[i].chan_url)}>
-                <img src={youtubeSvg} style={checkValidStyle(json[i].chan_url)} alt="youtubeSvg"></img>
-              </button>
-            </div>
-          </div>
-        );
-      } catch (e) {}
-    }
-    setChannels(pushChannels);
-  }, [p, json]);
+            );
+          } catch (e) {}
+        }
+        setChannels(pushChannels);
+      });
+  }, [query, subs, avrViews, totalViews, page, currentUser]);
 
   return (
     <React.Fragment>
@@ -166,12 +170,7 @@ const Search = () => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-            <Link to="/login">
-              <button className="btn-1 mg-r-2">로그인</button>
-            </Link>
-            <Link to="/signup">
-              <button className="btn-1 mg-r-2">가입</button>
-            </Link>
+          {(currentUser ? Logout:LoginAndRegister)}
           </div>
         </div>
         <hr />
@@ -454,9 +453,8 @@ const Search = () => {
         <button
           className="btn-1 mg-r-0 mg-b-1"
           onClick={() => {
-            if (p > 0) {
-              var v = p - 1;
-              setP(v);
+            if (page > 0) {
+              setPage(page - 1);
             }
           }}
         >
@@ -465,15 +463,12 @@ const Search = () => {
           </h1>
         </button>
         <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-          <h1>{p + 1}</h1>
+          <h1>{page + 1}</h1>
         </button>
         <button
           className="btn-1 mg-b-1"
           onClick={() => {
-            if (p < Object.keys(json).length / 20 - 1) {
-              var v = p + 1;
-              setP(v);
-            }
+              setPage(page+1);
           }}
         >
           <h1>

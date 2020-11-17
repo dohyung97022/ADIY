@@ -8,9 +8,12 @@ import Channel from "./router/channel";
 import Why from "./router/why";
 import Login from "./router/login";
 import SignUp from "./router/sign-up";
+import SignIn from "./router/sign-in";
 import Payment from "./router/payment";
 import Profile from "./router/profile";
 import PayInfo from "./router/pay-info";
+import { AuthContextProvider } from "./firebase/FirebaseContext";
+import {NeedLoggedInRoute, NeedLoggedOutRoute} from "./firebase/FirebaseRoutes";
 
 export const GlobalContext = createContext(null);
 
@@ -26,6 +29,7 @@ const Index = () => {
   return (
     <Router>
       <Switch>
+      <AuthContextProvider>
         <GlobalContext.Provider
           value={{
             input,
@@ -42,12 +46,13 @@ const Index = () => {
           <Route path="/search" component={Search} />
           <Route path="/channel" component={Channel} />
           <Route path="/why" component={Why} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={SignUp} />
+          <NeedLoggedOutRoute path="/signin" redirect="/" component={SignIn} />
+          <NeedLoggedOutRoute path="/signup" redirect="/" component={SignUp} />
           <Route path="/payment" component={Payment} />
           <Route path="/profile" component={Profile} />
           <Route path="/payinfo" component={PayInfo} />
         </GlobalContext.Provider>
+        </AuthContextProvider>
       </Switch>
     </Router>
   );

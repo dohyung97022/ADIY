@@ -1,19 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import brandImg from "../img/brand.png";
 import SearchBar from "../components/search-bar";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../firebase/FirebaseContext";
+import { firebaseApp } from "../firebase/Firebase";
 
-const main = () => {
+const Main = () => {
+  const currentUser = useContext(AuthContext);
+
+  const LoginAndRegister = (
+  <React.Fragment><Link to="/signin">
+  <button className="btn-1 mg-r-2">Login</button>
+  </Link>
+  <Link to="/signup">
+  <button className="btn-1 mg-r-2">Register</button>
+  </Link></React.Fragment>)
+
+const Logout = (
+  <React.Fragment>
+  <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+  </React.Fragment>)
+
   return (
     <React.Fragment>
       <div className="rlt opt">
         <div className="abs abs-cntr abs-r">
-          <Link to="/login">
-            <button className="btn-1 mg-r-2">로그인</button>
-          </Link>
-          <Link to="/signup">
-            <button className="btn-1 mg-r-2">가입</button>
-          </Link>
+          {(currentUser ? Logout:LoginAndRegister)}
         </div>
       </div>
       <Link className="rlt flex-cnt mg-t-5 main-img" to="/">
@@ -29,4 +41,4 @@ const main = () => {
   );
 };
 
-export default main;
+export default Main;
