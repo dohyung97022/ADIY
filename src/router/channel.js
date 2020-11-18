@@ -41,15 +41,15 @@ const Channel = () => {
         </div>
         <div className="flex-cnt txt-cnt mg-t-0 grid-itm-info">
           <div>
-            <h1>{intFormat(json["channel"].subs, "명")}</h1>
+            <h1>{intFormat(json["channel"].subs, "","명")}</h1>
             <p>구독자</p>
           </div>
           <div>
-            <h1>{intFormat(json["channel"].ttl_views, "명")}</h1>
+            <h1>{intFormat(json["channel"].ttl_views, "","명")}</h1>
             <p>총조회수</p>
           </div>
           <div>
-            <h1>{intFormat(json["channel"].avr_views, "명")}</h1>
+            <h1>{intFormat(json["channel"].avr_views, "","명")}</h1>
             <p>평균조회수</p>
           </div>
         </div>
@@ -84,11 +84,11 @@ const Channel = () => {
           <div className="w-100 flex-cnt mg-t-0">
             <div className="media-cnl-txt w-50">
               <p className="w-50 c-font-3">조회수</p>
-              <p className="w-50">{intFormat(json["videos"][i].ViewCount, "회")}</p>
+              <p className="w-50">{intFormat(json["videos"][i].ViewCount, "" ,"회")}</p>
             </div>
             <div className="media-cnl-txt w-50">
               <p className="w-50 c-font-3">댓글</p>
-              <p className="w-50">{intFormat(json["videos"][i].CommentsCount, "개")}</p>
+              <p className="w-50">{intFormat(json["videos"][i].CommentsCount, "" ,"개")}</p>
             </div>
           </div>
           <div className="w-100 flex-cnt mg-t-0 mg-b-0">

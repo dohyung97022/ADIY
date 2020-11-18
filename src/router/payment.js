@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import brandImg from "../img/brand-36.png";
-import shakeHandImg from "../img/shake-hand.png";
+// import shakeHandImg from "../img/shake-hand.png";
 import SearchBar from "../components/search-bar";
 
 function Paypal() {
@@ -48,7 +48,7 @@ function Paypal() {
 
 const payment = () => {
   var plans = [];
-  for (var i = 1; i <= 3; i++) {
+  for (var i = 1; i <= 1; i++) {
     var c = "bgc-b";
     if (i === 2) {
       c = "bgc-g";
@@ -62,28 +62,26 @@ const payment = () => {
         key={i}
       >
         <h3
-          className={"txt-cnt c-font-1 pd-t-2 pd-b-2 flex-cnt flex-h-cntr " + c}
+          className={"txt-cnt c-font-2 pd-t-2 pd-b-2 flex-cnt flex-h-cntr " + c}
         >
-          Master Plan
+          17$ / Month
         </h3>
-        <div className="flex-row mg-t-1 mg-b-1 pd-l-1 pd-r-1">
-          <div className="pay-itm-l mg-r-0">
-            <h4 className="mg-t-0 btn-1">검색</h4>
-            <h4 className="mg-t-0 btn-1">체널필터링</h4>
-            <h4 className="mg-t-0 btn-1">체널 키워드분석</h4>
-            <h4 className="mg-t-0 btn-1">체널 지수분석</h4>
-            <h4 className="mg-t-0 btn-1">체널 참여도분석</h4>
-            <h4 className="mg-t-0 btn-1">이메일 조회</h4>
-            <h4 className="mg-t-0 btn-1">키워드 도구</h4>
+        <div className="flex-row mg-t-1 mg-b-1">
+          <div className="pay-itm-l mg-auto">
+            <h4 className="mg-t-0 btn-1">Search</h4>
+            <h4 className="mg-t-0 btn-1">Channel Filtering</h4>
+            <h4 className="mg-t-0 btn-1">Channel Keyword Analysis</h4>
+            <h4 className="mg-t-0 btn-1">Channel Contacts</h4>
+            <h4 className="mg-t-0 btn-1">Cost Analysis</h4>
+            <h4 className="mg-t-0 btn-1">Email View</h4>
           </div>
-          <div className="pay-itm-r">
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
-            <h4 className="mg-t-0 c-font-3">무제한</h4>
+          <div className="pay-itm-r mg-auto txt-cnt">
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
+            <h1 className="mg-t-0 c-font-3">Unlimited</h1>
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
           </div>
         </div>
         <div className="mg-l-1 mg-r-1 paypal-itm-h">
@@ -116,7 +114,7 @@ const payment = () => {
           </div>
         </div>
         <hr />
-        <div className="rlt max-main-w opt">
+        {/* <div className="rlt max-main-w opt">
           <div className="abs abs-cntr abs-l">
             <button className="btn-1 mg-l-1 mg-r-1">
               체널<i className="fas fa-angle-down"></i>
@@ -129,17 +127,17 @@ const payment = () => {
             </button>
           </div>
         </div>
-        <hr />
+        <hr /> */}
       </header>
-      <img
+      {/* <img
         className="abs abs-l abs-r mg-auto mg-t-2 z-i--1 pay-img"
         src={shakeHandImg}
         alt="shakeHandImg"
-      />
+      /> */}
       <h3 className="btn-1 c-font-1 txt-cnt mg-t-4">
         Reach out for more Youtubers!
       </h3>
-      <h1 className="txt-cnt mg-t-0">Make advertising affordable!</h1>
+      <h1 className="txt-cnt c-font-3 mg-t-0">Make advertising affordable!</h1>
 
       <div className="mg-t-4 flex-cnt flex-h-cntr flex-row media-pay-flex">
         {plans}

@@ -2,6 +2,7 @@ import React from "react";
 import { Doughnut, defaults, Chart } from "react-chartjs-2";
 
 const doughnutChart = () => {
+  
   var chartFontPercent = 0.13;
   var minChartFontSize = 15;
   defaults.global.defaultFontStyle = 400;

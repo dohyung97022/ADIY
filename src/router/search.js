@@ -13,16 +13,18 @@ import BarChart from "../chart/bar";
 import PieChart from "../chart/pie";
 import SearchBar from "../components/search-bar";
 import DropDownBtn from "../components/dropdown-btn";
+import Loader from "../components/loader";
 import { AuthContext } from "../firebase/FirebaseContext";
 import { firebaseApp, getIDToken } from "../firebase/Firebase";
 
 const Search = () => {
   const query = new URLSearchParams(window.location.search).get("q");
-  const [channels, setChannels] = useState([]);
+  const [json, setJson] = useState([]);
+  const [channels, setChannels] = useState();
   const [pageButtons, setPageButtons] = useState([]);
-  const { chartIntData, setChartIntData, chartStrData, setChartStrData, channelData, setChannelData } = useContext(GlobalContext);
-  const [csd, setCsd] = useState(chartStrData);
-  const [cid, setCid] = useState(chartIntData);
+  const { chartIntData, setChartIntData, chartStrData, setChartStrData } = useContext(GlobalContext);
+  const [csd, setCsd] = useState([]);
+  const [cid, setCid] = useState([]);
   const [cpv, setCpv] = useState(0.003);
   const [vsc, setVsc] = useState(2000);
   const [pp, setPp] = useState(7);
@@ -55,13 +57,19 @@ const Search = () => {
     </React.Fragment>)
 
   function removeChartDataIndex(i) {
+    var csd = chartStrData;
     csd.splice(i, 1);
-    setChartStrData(csd);
-    setCsd(csd);
-
-    chartIntData.splice(i, 1);
-    setChartIntData([...chartIntData]);
-    setCid(chartIntData);
+    setChartStrData([...csd]);
+    
+    //setting int data
+    var cid = chartIntData;
+    cid.splice(i, 1);
+    setChartIntData([...cid]);
+  }
+  
+  function consoleLogChartData(){
+    console.log(chartStrData);
+    console.log(chartIntData);
   }
 
   const DropDownCustom = (props) => {
@@ -84,9 +92,8 @@ const Search = () => {
       </button>
     );
   };
-
-
   useEffect(() => {
+    setChannels(Loader());
     fetch(
       `http://localhost:3000/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
       method: "GET", 
@@ -94,8 +101,11 @@ const Search = () => {
         "IDToken": IDToken}
     })
       .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
+      .then((json) => {setJson(json); console.log(json)})
+    }, [query, subs, avrViews, totalViews, page, currentUser]);
+
+
+  useEffect(() => {
         var pushChannels = [];
         for (let i = 0; i < Object.keys(json).length; i++) {
           try {
@@ -104,14 +114,17 @@ const Search = () => {
                 className="grid-itm bgc-itm"
                 key={i}
                 onClick={() => {
-                  if (!csd.includes(json[i].title) && csd.length <= 4) {
-                    csd.push(json[i].title);
-                    setChartStrData(csd);
-                    setCsd(csd);
-    
+                  consoleLogChartData();
+                  if (!chartStrData.includes(json[i].title) && chartStrData.length <= 4) {
+                    //setting string data
+                    var csd = chartStrData;
+                    csd.push(json[i].title)
+                    setChartStrData([...csd]);
+
+                    //setting int data
+                    var cid = chartIntData;
                     cid.push(Number(json[i].avr_views));
                     setChartIntData([...cid]);
-                    setCid(cid);
                   }
                 }}
               >
@@ -130,34 +143,34 @@ const Search = () => {
                 </Link> */}
                 <div className="grid-itm-info mg-t-8 mg-b-8">
                   <div>
-                    <h1>{intFormat(json[i].subs, "명")}</h1>
-                    <p className="mg-auto">구독자</p>
+                    <h1>{intFormat(json[i].subs, "", "")}</h1>
+                    <p className="mg-auto">Subs</p>
                   </div>
                   <div>
-                    <h1>{intFormat(json[i].ttl_views, "회")}</h1>
-                    <p className="mg-auto">총조회수</p>
+                    <h1>{intFormat(json[i].ttl_views, "")}</h1>
+                    <p className="mg-auto">Total View</p>
                   </div>
                   <div>
-                    <h1>{intFormat(json[i].avr_views, "회")}</h1>
-                    <p className="mg-auto">평균조회수</p>
+                    <h1>{intFormat(json[i].avr_views, "")}</h1>
+                    <p className="mg-auto">Avr View</p>
                   </div>
                 </div>
                 <hr className="hr-1" />
                 <div className="grid-itm-info mg-t-8 mg-b-8">
-                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                    <img src={twitchSvg} style={checkValidStyle(json[i])} alt="twitchSvg"></img>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i].twitch)}>
+                    <img src={twitchSvg} style={checkValidStyle(json[i].twitch)} alt="twitchSvg"></img>
                   </button>
-                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                    <img src={instagramSvg} style={checkValidStyle(json[i])} alt="instagramSvg"></img>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i].instagram)}>
+                    <img src={instagramSvg} style={checkValidStyle(json[i].instagram)} alt="instagramSvg"></img>
                   </button>
-                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                    <img src={facebookSvg} style={checkValidStyle(json[i])} alt="facebookSvg"></img>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i].facebook)}>
+                    <img src={facebookSvg} style={checkValidStyle(json[i].facebook)} alt="facebookSvg"></img>
                   </button>
-                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i])}>
-                    <img src={twitterSvg} style={checkValidStyle(json[i])} alt="twitterSvg"></img>
+                  <button className="btn-svg" onClick={() => openLinkIfValid(json[i].twitter)}>
+                    <img src={twitterSvg} style={checkValidStyle(json[i].twitter)} alt="twitterSvg"></img>
                   </button>
                   <button className="btn-svg">
-                    <img src={emailSvg} style={checkValidStyle(getEmailFromString(json[i].about))} alt="emailSvg"></img>
+                    <img src={emailSvg} style={checkValidStyle(json[i].email)} alt="emailSvg"></img>
                   </button>
                   <button className="btn-svg" onClick={() => openLinkIfValid(json[i].chan_url)}>
                     <img src={youtubeSvg} style={checkValidStyle(json[i].chan_url)} alt="youtubeSvg"></img>
@@ -167,45 +180,70 @@ const Search = () => {
             );
           } catch (e) {}
         }
-
-        setPageButtons((        
-        <div className="pageButtons">
-        {page>0? (        
-         <button
-            className="btn-1 mg-b-1"
-            onClick={() => {{setPage(page - 1);}}}>
-            <h1>
-              <i className="fas fa-angle-left" />
-            </h1>
-          </button>):
-          <button className="btn-1 mg-b-1">
-            <h1 className="c-font-3">
-              <i className="fas fa-angle-left" />
-            </h1>
-          </button>
+        if (pushChannels.length!=0){
+          setChannels(pushChannels);
+        } else {
+          setChannels(Loader);
         }
-        <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-          <h1>{page + 1}</h1>
-        </button>
-        {Object.keys(json).length==20? (        
-         <button
-            className="btn-1 mg-b-1"
-            onClick={() => {setPage(page+1);}}>
-            <h1>
-              <i className="fas fa-angle-right" />
-            </h1>
-          </button>):
-
-          <button className="btn-1 mg-b-1">
-            <h1 className="c-font-3">
-              <i className="fas fa-angle-right mg-auto" />
-            </h1>
-          </button>
+        if (currentUser){
+          setPageButtons((        
+            <div className="pageButtons">
+            {page>0? (        
+             <button
+                className="btn-1 mg-b-1"
+                onClick={() => {{setPage(page - 1);}}}>
+                <h1>
+                  <i className="fas fa-angle-left" />
+                </h1>
+              </button>):
+              <button className="btn-1 mg-b-1">
+                <h1 className="c-font-3">
+                  <i className="fas fa-angle-left" />
+                </h1>
+              </button>
+            }
+            <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
+              <h1>{page + 1}</h1>
+            </button>
+            {Object.keys(json).length==20?  
+             <button
+                className="btn-1 mg-b-1"
+                onClick={() => {setPage(page+1);}}>
+                <h1>
+                  <i className="fas fa-angle-right" />
+                </h1>
+              </button>
+              :
+              <button className="btn-1 mg-b-1">
+                <h1 className="c-font-3">
+                  <i className="fas fa-angle-right mg-auto" />
+                </h1>
+              </button>
+            }
+            </div>));
+        } else {
+          setPageButtons((        
+            <div className="pageButtons">
+              <button className="btn-1 mg-b-1">
+              <Link to="/payment">
+                <h1 className="c-font-3">
+                  <i className="fas fa-angle-left" />
+                </h1>
+              </Link>
+              </button>
+            <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
+              <h1>{page + 1}</h1>
+            </button>
+              <button className="btn-1 mg-b-1">
+              <Link to="/payment">
+                <h1 className="c-font-3">
+                  <i className="fas fa-angle-right mg-auto" />
+                </h1>
+              </Link>
+              </button>
+            </div>));
         }
-        </div>));
-        setChannels(pushChannels);
-      });
-  }, [query, subs, avrViews, totalViews, page, currentUser]);
+  }, [json,chartIntData,chartStrData]);
 
   return (
     <React.Fragment>
@@ -222,7 +260,7 @@ const Search = () => {
           </div>
         </div>
         <hr />
-        <div className="rlt max-main-w opt">
+        {/* <div className="rlt max-main-w opt">
           <div className="abs abs-cntr abs-l">
             <button className="btn-1 mg-l-1 mg-r-1">
               체널<i className="mg-svg fas fa-angle-down"></i>
@@ -235,7 +273,7 @@ const Search = () => {
             </button>
           </div>
         </div>
-        <hr />
+        <hr /> */}
         <div className="rlt max-main-w mg-t-2 mg-b-1">
           <h1 className="txt-cnt c-font-1">{query}</h1>
         </div>
@@ -288,7 +326,7 @@ const Search = () => {
         </div>
         <div className="rlt max-main-w flex-cnt grid-gap txt-cnt mg-t-0 mg-b-1">
           <p className="none media-show">cost per view : {cpv} $</p>
-          <p className="none media-show">{vsc} view to 1 sales</p>
+          <p className="none media-show">{vsc} views to 1 sales</p>
           <p className="none media-show">product price : {pp} $</p>
         </div>
         <div className="rlt max-main-w flex-cnt grid-gap">
@@ -297,7 +335,7 @@ const Search = () => {
               <h1 className="mg-l-2">Views</h1>
             </div>
             <div className="flex-itm-iner mg-auto">
-              <BarChart yAxis="true" />
+              <BarChart yAxis="true" intAryData="" strAryData="" />
             </div>
           </div>
           <div className="flex-itm bgc-itm">
@@ -313,36 +351,36 @@ const Search = () => {
                 <i className="fas fa-square mg-auto c-b" />
               </div>
               <p className="grid-2 mg-auto">{intFormat(chartIntData[0], "")}</p>
-              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[0] * cpv, "")}</p>
+              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[0] * cpv, ""," $")}</p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-p" />
               </div>
               <p className="grid-2 mg-auto">{intFormat(chartIntData[1], "")}</p>
-              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[1] * cpv, "")}</p>
+              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[1] * cpv, "", " $")}</p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-o" />
               </div>
               <p className="grid-2 mg-auto">{intFormat(chartIntData[2], "")}</p>
-              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[2] * cpv, "")}</p>
+              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[2] * cpv,"", " $")}</p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-g" />
               </div>
               <p className="grid-2 mg-auto">{intFormat(chartIntData[3], "")}</p>
-              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[3] * cpv, "")}</p>
+              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[3] * cpv,"", " $")}</p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-s" />
               </div>
               <p className="grid-2 mg-auto">{intFormat(chartIntData[4], "")}</p>
-              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[4] * cpv, "")}</p>
+              <p className="grid-3 mg-auto txt-dot">{intFormat(chartIntData[4] * cpv, "", " $")}</p>
 
               <h2 className="grid-4 grid-4-val mg-auto txt-dot">
                 {intFormat(
                   sumNaN(chartIntData[0], chartIntData[1], chartIntData[2], chartIntData[3], chartIntData[4]) * cpv,
-                  ""
+                  "", "$"
                 )}
               </h2>
             </div>
@@ -362,7 +400,7 @@ const Search = () => {
                     (sumNaN(chartIntData[0], chartIntData[1], chartIntData[2], chartIntData[3], chartIntData[4]) /
                       vsc) *
                       pp,
-                    ""
+                    "", "$"
                   )}
                 </h2>
               </div>
@@ -381,41 +419,41 @@ const Search = () => {
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-b" />
               </div>
-              <p className="grid-2 mg-auto">{intFormat((chartIntData[0] / vsc) * pp, "")}</p>
+              <p className="grid-2 mg-auto">{intFormat((chartIntData[0] / vsc) * pp, "", " $")}</p>
               <p className="grid-3 mg-auto txt-dot">
-                {intFormat((chartIntData[0] / vsc) * pp - chartIntData[0] * cpv, "", "0")}
+                {intFormat((chartIntData[0] / vsc) * pp - chartIntData[0] * cpv, "", " $")}
               </p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-p" />
               </div>
-              <p className="grid-2 mg-auto">{intFormat((chartIntData[1] / vsc) * pp, "")}</p>
+              <p className="grid-2 mg-auto">{intFormat((chartIntData[1] / vsc) * pp, "", " $")}</p>
               <p className="grid-3 mg-auto txt-dot">
-                {intFormat((chartIntData[1] / vsc) * pp - chartIntData[1] * cpv, "", "0")}
+                {intFormat((chartIntData[1] / vsc) * pp - chartIntData[1] * cpv, "", " $")}
               </p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-o" />
               </div>
-              <p className="grid-2 mg-auto">{intFormat((chartIntData[2] / vsc) * pp, "")}</p>
+              <p className="grid-2 mg-auto">{intFormat((chartIntData[2] / vsc) * pp, "", " $")}</p>
               <p className="grid-3 mg-auto txt-dot">
-                {intFormat((chartIntData[2] / vsc) * pp - chartIntData[2] * cpv, "", "0")}
+                {intFormat((chartIntData[2] / vsc) * pp - chartIntData[2] * cpv, "", " $")}
               </p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-g" />
               </div>
-              <p className="grid-2 mg-auto">{intFormat((chartIntData[3] / vsc) * pp, "")}</p>
+              <p className="grid-2 mg-auto">{intFormat((chartIntData[3] / vsc) * pp, "", " $")}</p>
               <p className="grid-3 mg-auto txt-dot">
-                {intFormat((chartIntData[3] / vsc) * pp - chartIntData[3] * cpv, "", "0")}
+                {intFormat((chartIntData[3] / vsc) * pp - chartIntData[3] * cpv, "", " $")}
               </p>
 
               <div className="grid-1">
                 <i className="fas fa-square mg-auto c-s" />
               </div>
-              <p className="grid-2 mg-auto">{intFormat((chartIntData[4] / vsc) * pp, "")}</p>
+              <p className="grid-2 mg-auto">{intFormat((chartIntData[4] / vsc) * pp, "", " $")}</p>
               <p className="grid-3 mg-auto txt-dot">
-                {intFormat((chartIntData[4] / vsc) * pp - chartIntData[4] * cpv, "", "0")}
+                {intFormat((chartIntData[4] / vsc) * pp - chartIntData[4] * cpv, "", " $")}
               </p>
 
               <h2 className="grid-4 grid-4-val mg-auto c-font-2 txt-dot">
@@ -428,7 +466,7 @@ const Search = () => {
                     (chartIntData[4] / vsc) * pp - chartIntData[4] * cpv
                   ),
                   "",
-                  "0"
+                  "$"
                 )}
               </h2>
             </div>
@@ -452,7 +490,7 @@ const Search = () => {
                 step="0.001"
               />
               <p className="grid-1 none media-show">csc</p>
-              <p className="grid-1 media-none">{vsc} view to 1 sales</p>
+              <p className="grid-1 media-none">{vsc} views to 1 sales</p>
               <input
                 className="grid-1"
                 type="range"
@@ -482,19 +520,19 @@ const Search = () => {
         </div>
         <div className="rlt max-main-w opt">
           <div className="abs abs-cntr abs-l mg-l-1">
-            <DropDownBtn title="구독자">
-              <DropDownCustom q={"&sbmin=10000&sbmax=50000"} valStr="subs" val={subs} text="1~5만" />
-              <DropDownCustom q={"&sbmin=50000&sbmax=100000"} valStr="subs" val={subs} text="5~10만" />
-              <DropDownCustom q={"&sbmin=100000&sbmax=500000"} valStr="subs" val={subs} text="10~50만" />
-              <DropDownCustom q={"&sbmin=500000&sbmax=1000000"} valStr="subs" val={subs} text="50~100만" />
-              <DropDownCustom q={"&sbmin=1000000"} valStr="subs" val={subs} text="100+만" />
+            <DropDownBtn title="Subs">
+              <DropDownCustom q={"&sbmin=10000&sbmax=50000"} valStr="subs" val={subs} text="10~50K" />
+              <DropDownCustom q={"&sbmin=50000&sbmax=100000"} valStr="subs" val={subs} text="50~100K" />
+              <DropDownCustom q={"&sbmin=100000&sbmax=500000"} valStr="subs" val={subs} text="100~500K" />
+              <DropDownCustom q={"&sbmin=500000&sbmax=1000000"} valStr="subs" val={subs} text="500K~1M" />
+              <DropDownCustom q={"&sbmin=1000000"} valStr="subs" val={subs} text="1M" />
             </DropDownBtn>
-            <DropDownBtn title="평균조회수">
-              <DropDownCustom q={"&avmin=10000&avmax=50000"} valStr="avrViews" val={avrViews} text="1~5만" />
-              <DropDownCustom q={"&avmin=50000&avmax=100000"} valStr="avrViews" val={avrViews} text="5~10만" />
-              <DropDownCustom q={"&avmin=100000&avmax=500000"} valStr="avrViews" val={avrViews} text="10~50만" />
-              <DropDownCustom q={"&avmin=500000&avmax=1000000"} valStr="avrViews" val={avrViews} text="50~100만" />
-              <DropDownCustom q={"&avmin=1000000"} valStr="avrViews" val={avrViews} text="100+만" />
+            <DropDownBtn title="Avr View">
+              <DropDownCustom q={"&avmin=10000&avmax=50000"} valStr="avrViews" val={avrViews} text="10~50K" />
+              <DropDownCustom q={"&avmin=50000&avmax=100000"} valStr="avrViews" val={avrViews} text="50~100K" />
+              <DropDownCustom q={"&avmin=100000&avmax=500000"} valStr="avrViews" val={avrViews} text="100~500K" />
+              <DropDownCustom q={"&avmin=500000&avmax=1000000"} valStr="avrViews" val={avrViews} text="500K~1M" />
+              <DropDownCustom q={"&avmin=1000000"} valStr="avrViews" val={avrViews} text="1M" />
             </DropDownBtn>
           </div>
         </div>

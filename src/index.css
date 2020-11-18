@@ -60,7 +60,7 @@
   --input-persentage-width: 70%;
 
   --flex-item-h: min(23vw, 180px);
-  --grid-item-h: 370px;
+  --grid-item-h: 360px;
 
   --cnl-grid-chart-h: min(20vw, 112px);
   --channel-width: 1000px;
@@ -496,6 +496,9 @@ input[type="range"]::-moz-range-thumb {
 .w-100 {
   width: 100%;
 }
+.h-100 {
+  height: 100%;
+}
 .mw-100 {
   max-width: 100%;
 }
@@ -644,10 +647,10 @@ input[type="range"]::-moz-range-thumb {
 
 /* payment */
 :root {
-  --pay-item-w: min(50vw, 350px);
+  --pay-item-w: min(70vw, 600px);
   --pay-item-h: auto;
-  --paypal-item-h: max(13vw, 82px);
-  --paypal-item-h-max: 145px;
+  --paypal-item-h: max(30vw, 82px);
+  --paypal-item-h-max: 165px;
 
   --pay-item-l: 70%;
   --radius-main-border: 6px;
