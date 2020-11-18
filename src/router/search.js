@@ -14,25 +14,33 @@ import PieChart from "../chart/pie";
 import SearchBar from "../components/search-bar";
 import DropDownBtn from "../components/dropdown-btn";
 import { AuthContext } from "../firebase/FirebaseContext";
-import { firebaseApp } from "../firebase/Firebase";
+import { firebaseApp, getIDToken } from "../firebase/Firebase";
 
 const Search = () => {
   const query = new URLSearchParams(window.location.search).get("q");
   const [channels, setChannels] = useState([]);
-  const { chartIntData, setChartIntData, chartStrData, setChartStrData, channelData, setChannelData } = useContext(
-    GlobalContext
-  );
+  const [pageButtons, setPageButtons] = useState([]);
+  const { chartIntData, setChartIntData, chartStrData, setChartStrData, channelData, setChannelData } = useContext(GlobalContext);
   const [csd, setCsd] = useState(chartStrData);
   const [cid, setCid] = useState(chartIntData);
-  const [cpv, setCpv] = useState(5);
-  const [vsc, setVsc] = useState(1000);
-  const [pp, setPp] = useState(6000);
+  const [cpv, setCpv] = useState(0.003);
+  const [vsc, setVsc] = useState(2000);
+  const [pp, setPp] = useState(7);
   const [subs, setSubs] = useState("");
   const [avrViews, setAvrViews] = useState("");
   const [totalViews, setTotalViews] = useState("");
   const [page, setPage] = useState(0);
 
   const currentUser = useContext(AuthContext);
+
+  var IDToken = "";
+    
+  if (currentUser) {
+    getIDToken().then(function (token) {
+      IDToken = token;
+    });
+  }
+  
   const LoginAndRegister = (
   <React.Fragment><Link to="/signin">
   <button className="btn-1 mg-r-2">Login</button>
@@ -40,6 +48,7 @@ const Search = () => {
   <Link to="/signup">
   <button className="btn-1 mg-r-2">Register</button>
   </Link></React.Fragment>)
+
   const Logout = (
     <React.Fragment>
     <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
@@ -60,11 +69,11 @@ const Search = () => {
       <button
         onClick={() => {
           if (props.q === props.val) {
-            if (props.valStr === "subs") setSubs("");
-            if (props.valStr === "avrViews") setAvrViews("");
+            if (props.valStr === "subs") {setSubs("");setPage(0);}
+            if (props.valStr === "avrViews") {setAvrViews("");setPage(0);}
           } else {
-            if (props.valStr === "subs") setSubs(props.q);
-            if (props.valStr === "avrViews") setAvrViews(props.q);
+            if (props.valStr === "subs") {setSubs(props.q);setPage(0);}
+            if (props.valStr === "avrViews") {setAvrViews(props.q);setPage(0);}
           }
         }}
         style={checkValidStyle(props.q === props.val)}
@@ -76,11 +85,14 @@ const Search = () => {
     );
   };
 
+
   useEffect(() => {
-    //header 에다가 uid 보내기
     fetch(
-      `http://ec2-54-161-234-228.compute-1.amazonaws.com:3000/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`
-    )
+      `http://localhost:3000/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
+      method: "GET", 
+      headers: {
+        "IDToken": IDToken}
+    })
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
@@ -155,6 +167,42 @@ const Search = () => {
             );
           } catch (e) {}
         }
+
+        setPageButtons((        
+        <div className="pageButtons">
+        {page>0? (        
+         <button
+            className="btn-1 mg-b-1"
+            onClick={() => {{setPage(page - 1);}}}>
+            <h1>
+              <i className="fas fa-angle-left" />
+            </h1>
+          </button>):
+          <button className="btn-1 mg-b-1">
+            <h1 className="c-font-3">
+              <i className="fas fa-angle-left" />
+            </h1>
+          </button>
+        }
+        <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
+          <h1>{page + 1}</h1>
+        </button>
+        {Object.keys(json).length==20? (        
+         <button
+            className="btn-1 mg-b-1"
+            onClick={() => {setPage(page+1);}}>
+            <h1>
+              <i className="fas fa-angle-right" />
+            </h1>
+          </button>):
+
+          <button className="btn-1 mg-b-1">
+            <h1 className="c-font-3">
+              <i className="fas fa-angle-right mg-auto" />
+            </h1>
+          </button>
+        }
+        </div>));
         setChannels(pushChannels);
       });
   }, [query, subs, avrViews, totalViews, page, currentUser]);
@@ -177,13 +225,13 @@ const Search = () => {
         <div className="rlt max-main-w opt">
           <div className="abs abs-cntr abs-l">
             <button className="btn-1 mg-l-1 mg-r-1">
-              체널<i className="fas fa-angle-down"></i>
+              체널<i className="mg-svg fas fa-angle-down"></i>
             </button>
             <button className="btn-1 mg-r-1">
-              인스타<i className="fas fa-angle-down"></i>
+              인스타<i className="mg-svg fas fa-angle-down"></i>
             </button>
             <button className="btn-1 mg-r-1">
-              키워드<i className="fas fa-angle-down"></i>
+              키워드<i className="mg-svg fas fa-angle-down"></i>
             </button>
           </div>
         </div>
@@ -239,14 +287,14 @@ const Search = () => {
           </p>
         </div>
         <div className="rlt max-main-w flex-cnt grid-gap txt-cnt mg-t-0 mg-b-1">
-          <p className="none media-show">cpc : 0.1$</p>
-          <p className="none media-show">click sales conversion : 2%</p>
-          <p className="none media-show">product price : 7$</p>
+          <p className="none media-show">cost per view : {cpv} $</p>
+          <p className="none media-show">{vsc} view to 1 sales</p>
+          <p className="none media-show">product price : {pp} $</p>
         </div>
         <div className="rlt max-main-w flex-cnt grid-gap">
           <div className="flex-itm bgc-itm">
             <div className="flex-itm-ttl flex-h-cntr bgc-b">
-              <h1 className="mg-l-2">조회수</h1>
+              <h1 className="mg-l-2">Views</h1>
             </div>
             <div className="flex-itm-iner mg-auto">
               <BarChart yAxis="true" />
@@ -254,7 +302,7 @@ const Search = () => {
           </div>
           <div className="flex-itm bgc-itm">
             <div className="flex-itm-ttl flex-h-cntr bgc-p">
-              <h1 className="mg-l-2">광고비</h1>
+              <h1 className="mg-l-2">Ad Cost</h1>
             </div>
             <div className="flex-itm-iner mg-t-0 flex-itm-grid mg-auto">
               <div className="grid-1"></div>
@@ -301,7 +349,7 @@ const Search = () => {
           </div>
           <div className="flex-itm bgc-itm">
             <div className="flex-itm-ttl flex-h-cntr bgc-o">
-              <h1 className="mg-l-2">총 매출</h1>
+              <h1 className="mg-l-2">Sales</h1>
             </div>
             <div className="flex-cnt flex-itm-iner mg-t-0 mg-auto">
               <div className="grap-p mg-auto">
@@ -322,7 +370,7 @@ const Search = () => {
           </div>
           <div className="flex-itm bgc-itm">
             <div className="flex-itm-ttl flex-h-cntr bgc-g">
-              <h1 className="mg-l-2">순수익</h1>
+              <h1 className="mg-l-2">Profit</h1>
             </div>
             <div className="flex-itm-iner mg-t-0 flex-itm-grid mg-auto">
               <div className="grid-1"></div>
@@ -387,20 +435,21 @@ const Search = () => {
           </div>
           <div className="flex-itm bgc-itm">
             <div className="flex-itm-ttl flex-h-cntr bgc-s">
-              <h1 className="mg-l-2">옵션</h1>
+              <h1 className="mg-l-2">Options</h1>
             </div>
             <div className="flex-itm-iner mg-t-0 flex-itm-grid-2 txt-cnt mg-auto">
               <p className="grid-1 none media-show">cpv</p>
-              <p className="grid-1 media-none">cpv : {cpv}</p>
+              <p className="grid-1 media-none">cpv : {cpv} $</p>
               <input
                 className="grid-1"
                 type="range"
                 onChange={(e) => {
                   setCpv(e.target.value);
                 }}
-                min="1"
-                max="10"
-                step="0.1"
+                value={cpv}
+                min="0.001"
+                max="0.05"
+                step="0.001"
               />
               <p className="grid-1 none media-show">csc</p>
               <p className="grid-1 media-none">{vsc} view to 1 sales</p>
@@ -410,21 +459,23 @@ const Search = () => {
                 onChange={(e) => {
                   setVsc(e.target.value);
                 }}
+                value={vsc}
                 min="100"
-                max="100000"
+                max="10000"
                 step="100"
               />
               <p className="grid-1 none media-show">pp</p>
-              <p className="grid-1 media-none">product price : {pp}</p>
+              <p className="grid-1 media-none">product price : {pp} $</p>
               <input
                 className="grid-1"
                 type="range"
                 onChange={(e) => {
                   setPp(e.target.value);
                 }}
-                min="1000"
-                max="100000"
-                step="100"
+                value={pp}
+                min="1"
+                max="100"
+                step="1"
               />
             </div>
           </div>
@@ -450,31 +501,7 @@ const Search = () => {
       </header>
       <div className="rlt max-main-w grid-cnt grid-gap">{channels}</div>
       <div className="rlt flex-cnt flex-h-cntr">
-        <button
-          className="btn-1 mg-r-0 mg-b-1"
-          onClick={() => {
-            if (page > 0) {
-              setPage(page - 1);
-            }
-          }}
-        >
-          <h1>
-            <i className="fas fa-angle-left" />
-          </h1>
-        </button>
-        <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-          <h1>{page + 1}</h1>
-        </button>
-        <button
-          className="btn-1 mg-b-1"
-          onClick={() => {
-              setPage(page+1);
-          }}
-        >
-          <h1>
-            <i className="fas fa-angle-right" />
-          </h1>
-        </button>
+      {pageButtons}
       </div>
     </React.Fragment>
   );

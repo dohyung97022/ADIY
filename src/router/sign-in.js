@@ -41,7 +41,7 @@ const SignIn = () => {
         </button> */}
         <div className="flex-sp-bt mg-t-1">
           <div></div>
-          <Link to="/login">
+          <Link to="/">
             <button className="btn-1">
               <h1>Back</h1>
             </button>

@@ -14,7 +14,7 @@ const dropDownButton = (props) => {
     <div className={"rlt inl-blc " + classAddText}>
       <button className="btn-1 drp-dwn-btn">
         {props.title}
-        <i className="fas fa-angle-down"></i>
+        <i className="fas fa-angle-down mg-svg"></i>
       </button>
       <div className="abs abs-l abs-r drp-dwn-cnt none z-i-1">{props.children}</div>
     </div>

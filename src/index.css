@@ -113,7 +113,7 @@ hr {
 .hr-1 {
   background-color: var(--color-hr-1);
 }
-svg {
+.mg-svg {
   margin-left: var(--margin-item);
 }
 h1 {

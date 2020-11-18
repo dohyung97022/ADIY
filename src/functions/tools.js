@@ -31,7 +31,7 @@ export function intFormat(v, e, z = "비공개") {
   if (l >= 4) {
     return (v / 1000).toFixed(0) + "천";
   }
-  return v + e;
+  return parseFloat(v + e).toFixed(0);
 }
 
 export function sumNaN(...v) {
