@@ -48,7 +48,8 @@ const Index = () => {
           <Route path="/why" component={Why} />
           <NeedLoggedOutRoute path="/signin" redirect="/" component={SignIn} />
           <NeedLoggedOutRoute path="/signup" redirect="/" component={SignUp} />
-          <Route path="/payment" component={Payment} />
+          <NeedLoggedOutRoute path="/signup_to_payment" redirect="/payment" component={SignUp} />
+          <NeedLoggedInRoute path="/payment" redirect="/signup" component={Payment} />
           <Route path="/profile" component={Profile} />
           <Route path="/payinfo" component={PayInfo} />
         </GlobalContext.Provider>

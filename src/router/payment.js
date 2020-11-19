@@ -1,18 +1,45 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import brandImg from "../img/brand-36.png";
-// import shakeHandImg from "../img/shake-hand.png";
 import SearchBar from "../components/search-bar";
+import { AuthContext } from "../firebase/FirebaseContext";
+import { getIDToken } from "../firebase/Firebase";
 
 function Paypal() {
   const [paidFor, setPaidFor] = useState(false);
   const [error, setError] = useState(null);
   const paypalRef = useRef();
+  const currentUser = useContext(AuthContext);
+
   useEffect(() => {
-    window.paypal
+    if (currentUser) {
+      getIDToken().then(function (token) {
+        fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
+        method: 'POST',
+        body: JSON.stringify({
+          IDToken: token,
+          paymentID: '',
+          })
+        }).then(res => 
+          res.json()
+          ).then((json) => {
+          if (json["payment"]=="true"){
+            alert("This account is already being paid.")
+            window.open("/main","_self");
+          }
+          console.log(json);
+        });
+    })
+  }
+  }, []);
+
+  useEffect(() => {
+    if (currentUser){
+      window.paypal
       .Buttons({
         createSubscription: (data, actions) => {
           return actions.subscription.create({
+            //출시 상품 만들고 이 번호를 변경
             plan_id: "P-9FJ0814303766574HL4BSGHY",
           });
         },
@@ -22,6 +49,7 @@ function Paypal() {
           );
           // const order = await actions.order.capture();
           setPaidFor(true);
+          savePayment(data.subscriptionID);
         },
         onError: (err) => {
           setError(err);
@@ -29,8 +57,27 @@ function Paypal() {
         },
       })
       .render(paypalRef.current);
+    }
   });
-
+  function savePayment(subscriptionID){
+    getIDToken().then(function (token) {
+      fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
+      method: 'POST',
+      body: JSON.stringify({
+        IDToken: token,
+        paymentID: subscriptionID,
+        })
+      }).then(res => 
+        res.json()
+        ).then((json) => {
+        if (json["payment"]=="true"){
+          alert("this account is now being paid")
+          window.open("/main","_self");
+        }
+        console.log(json);
+      });
+  })
+  }
   if (paidFor) {
     return (
       <div>
@@ -38,12 +85,14 @@ function Paypal() {
       </div>
     );
   }
-  return (
-    <div>
-      {error && <div>Uh oh, an error occurred! {error.message}</div>}
-      <div ref={paypalRef} />
-    </div>
-  );
+  if (currentUser){
+    return (
+      <div>
+        {error && <div>Uh oh, an error occurred! {error.message}</div>}
+        <div ref={paypalRef} />
+      </div>
+    );
+  }
 }
 
 const payment = () => {
@@ -79,7 +128,7 @@ const payment = () => {
             <h4 className="mg-t-0 c-font-3">Unlimited</h4>
             <h4 className="mg-t-0 c-font-3">Unlimited</h4>
             <h4 className="mg-t-0 c-font-3">Unlimited</h4>
-            <h1 className="mg-t-0 c-font-3">Unlimited</h1>
+            <h4 className="mg-t-0 c-font-3">Unlimited</h4>
             <h4 className="mg-t-0 c-font-3">Unlimited</h4>
             <h4 className="mg-t-0 c-font-3">Unlimited</h4>
           </div>

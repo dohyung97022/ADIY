@@ -106,6 +106,9 @@ const Search = () => {
 
 
   useEffect(() => {
+        if (json["payment"]=="false"){
+          window.open("/signup_to_payment","_self");
+        }
         var pushChannels = [];
         for (let i = 0; i < Object.keys(json).length; i++) {
           try {
@@ -221,11 +224,12 @@ const Search = () => {
               </button>
             }
             </div>));
-        } else {
+        } 
+        else {
           setPageButtons((        
             <div className="pageButtons">
               <button className="btn-1 mg-b-1">
-              <Link to="/payment">
+              <Link to="/signup_to_payment">
                 <h1 className="c-font-3">
                   <i className="fas fa-angle-left" />
                 </h1>
@@ -235,7 +239,7 @@ const Search = () => {
               <h1>{page + 1}</h1>
             </button>
               <button className="btn-1 mg-b-1">
-              <Link to="/payment">
+              <Link to="/signup_to_payment">
                 <h1 className="c-font-3">
                   <i className="fas fa-angle-right mg-auto" />
                 </h1>
@@ -477,7 +481,7 @@ const Search = () => {
             </div>
             <div className="flex-itm-iner mg-t-0 flex-itm-grid-2 txt-cnt mg-auto">
               <p className="grid-1 none media-show">cpv</p>
-              <p className="grid-1 media-none">cpv : {cpv} $</p>
+              <p className="grid-1 media-none">cost per view : {cpv} $</p>
               <input
                 className="grid-1"
                 type="range"
