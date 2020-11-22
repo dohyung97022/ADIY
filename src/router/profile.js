@@ -1,13 +1,50 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Link } from "react-router-dom";
 import brandImg from "../img/brand.png";
 import BuisinessProposal from "../img/buisiness-proposal.png";
 import PaymentMethod from "../img/payment-method.png";
 import SaveChannels from "../img/save-channels.png";
 import SearchBar from "../components/search-bar";
-
+import { firebaseApp, getIDToken } from "../firebase/Firebase";
+import { AuthContext } from "../firebase/FirebaseContext";
 
 const Profile = () => {
+  const currentUser = useContext(AuthContext);
+
+  const LoginAndRegister = (
+    <React.Fragment><Link to="/signin">
+    <button className="btn-1 mg-r-2">Login</button>
+    </Link>
+    <Link to="/signup">
+    <button className="btn-1 mg-r-2">Register</button>
+    </Link></React.Fragment>)
+  
+  const Logout = (
+    <React.Fragment>
+    <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+    </React.Fragment>)
+
+function cancelPayment(){
+  getIDToken().then(function (token) {
+    fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
+    method: 'POST',
+    body: JSON.stringify({
+      IDToken: token,
+      PaymentID: "",
+      Type:'cancel',
+      })
+    }).then(res => 
+      res.json()
+      ).then((json) => {
+      if (json["payment"]=="cancelled"){
+        alert("You have successfully cancelled subscription")
+        window.open("/","_self");
+      }
+      console.log(json);
+    });
+})
+}
+
   return (
     <React.Fragment>
       <header className="stk z-i-1">
@@ -23,34 +60,15 @@ const Profile = () => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-            <Link to="login">
-              <button className="btn-1 mg-r-2">로그인</button>
-            </Link>
-            <Link to="signup">
-              <button className="btn-1 mg-r-2">가입</button>
-            </Link>
-          </div>
-        </div>
-        <hr />
-        <div className="rlt max-main-w opt">
-          <div className="abs abs-cntr abs-l">
-            <button className="btn-1 mg-l-1 mg-r-1">
-              체널<i className="fas fa-angle-down"></i>
-            </button>
-            <button className="btn-1 mg-r-1">
-              인스타<i className="fas fa-angle-down"></i>
-            </button>
-            <button className="btn-1 mg-r-1">
-              키워드<i className="fas fa-angle-down"></i>
-            </button>
+          {(currentUser ? Logout:LoginAndRegister)}
           </div>
         </div>
         <hr />
       </header>
       
       <div className="txt-cnt why-width mg-auto">
-      <img className="grid-img mg-t-16" src={brandImg} alt="brandImg" />
-        <h3 className="c-font-1 mg-b-3 mg-t-2">Welcome, Dohyung</h3>
+      <img className="user-img grid-img mg-t-32" src={currentUser ? currentUser.photoURL:brandImg } alt="brandImg" />
+      <h3 className="c-font-1 mg-b-3 mg-t-2">Welcome, {currentUser ? currentUser.displayName:"User"  }</h3>
         <div className="flex-col">
 
         <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-3">Business Proposal</h1>
@@ -68,7 +86,12 @@ const Profile = () => {
         <p className="mg-b-1">Check your payment information.</p>
         </button>
 
-        Saved Channel Payment Information
+        <button className="btn-4 mg-b-2" onClick={()=>{cancelPayment()}}>
+        <h1 className="mg-t-1 c-font-3">Cancel Payment</h1>
+        <img className="profile-img mg-b-1 mg-t-1" src={PaymentMethod} alt="brandImg" />
+        <p className="mg-b-1">Cancel your payment information.</p>
+        </button>
+
         </div>
       </div>
     </React.Fragment>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import brandImg from "../img/brand-36.png";
 import SearchBar from "../components/search-bar";
 import { AuthContext } from "../firebase/FirebaseContext";
-import { getIDToken } from "../firebase/Firebase";
+import { firebaseApp, getIDToken } from "../firebase/Firebase";
 
 function Paypal() {
   const [paidFor, setPaidFor] = useState(false);
@@ -18,84 +18,87 @@ function Paypal() {
         method: 'POST',
         body: JSON.stringify({
           IDToken: token,
-          paymentID: '',
+          PaymentID: '',
+          Type:'check',
           })
         }).then(res => 
           res.json()
           ).then((json) => {
           if (json["payment"]=="true"){
             alert("This account is already being paid.")
-            window.open("/main","_self");
+            window.open("/","_self");
+          } else {
+            window.paypal
+            .Buttons({
+              createSubscription: (data, actions) => {
+                return actions.subscription.create({
+                  //출시 상품 만들고 이 번호를 변경
+                  plan_id: "P-9FJ0814303766574HL4BSGHY",
+                });
+              },
+              onApprove: async (data, actions) => {
+                console.log(
+                  "You have successfully created subscription " + data.subscriptionID
+                );
+                // const order = await actions.order.capture();
+                savePayment(data.subscriptionID);
+              },
+              onError: (err) => {
+                setError(err);
+                console.error(err);
+              },
+            })
+            .render(paypalRef.current);
           }
-          console.log(json);
         });
     })
   }
   }, []);
-
-  useEffect(() => {
-    if (currentUser){
-      window.paypal
-      .Buttons({
-        createSubscription: (data, actions) => {
-          return actions.subscription.create({
-            //출시 상품 만들고 이 번호를 변경
-            plan_id: "P-9FJ0814303766574HL4BSGHY",
-          });
-        },
-        onApprove: async (data, actions) => {
-          console.log(
-            "You have successfully created subscription " + data.subscriptionID
-          );
-          // const order = await actions.order.capture();
-          setPaidFor(true);
-          savePayment(data.subscriptionID);
-        },
-        onError: (err) => {
-          setError(err);
-          console.error(err);
-        },
-      })
-      .render(paypalRef.current);
-    }
-  });
   function savePayment(subscriptionID){
+    console.log(subscriptionID)
     getIDToken().then(function (token) {
       fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
       method: 'POST',
       body: JSON.stringify({
         IDToken: token,
-        paymentID: subscriptionID,
+        PaymentID: subscriptionID,
+        Type:'save',
         })
       }).then(res => 
         res.json()
         ).then((json) => {
-        if (json["payment"]=="true"){
-          alert("this account is now being paid")
-          window.open("/main","_self");
+        if (json["payment"]=="saved"){
+          alert("You have successfully created subscription")
+          window.open("/","_self");
         }
         console.log(json);
       });
   })
   }
-  if (paidFor) {
-    return (
-      <div>
-        <h1>Congrats, you just bought!</h1>
-      </div>
-    );
-  }
   if (currentUser){
     return (
       <div>
-        {error && <div>Uh oh, an error occurred! {error.message}</div>}
+        {error && <div>An error occurred! {error.message}</div>}
         <div ref={paypalRef} />
       </div>
     );
   }
 }
+const LoginAndRegister = (
+  <React.Fragment><Link to="/signin">
+  <button className="btn-1 mg-r-2">Login</button>
+  </Link>
+  <Link to="/signup">
+  <button className="btn-1 mg-r-2">Register</button>
+  </Link></React.Fragment>)
 
-const payment = () => {
+const Logout = (
+  <React.Fragment>
+  <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+  </React.Fragment>)
+
+const Payment = () => {
+  const currentUser = useContext(AuthContext);
   var plans = [];
   for (var i = 1; i <= 1; i++) {
     var c = "bgc-b";
@@ -154,12 +157,7 @@ const payment = () => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-            <Link to="/login">
-              <button className="btn-1 mg-r-2">로그인</button>
-            </Link>
-            <Link to="signup">
-              <button className="btn-1 mg-r-2">가입</button>
-            </Link>
+          {(currentUser ? Logout:LoginAndRegister)}
           </div>
         </div>
         <hr />
@@ -195,7 +193,7 @@ const payment = () => {
   );
 };
 
-export default payment;
+export default Payment;
 
 // product id PROD-23D66300LE1925216
 //         "href": "https://api.sandbox.paypal.com/v1/catalogs/products/PROD-23D66300LE1925216",

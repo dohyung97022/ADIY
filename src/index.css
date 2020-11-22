@@ -461,6 +461,9 @@ input[type="range"]::-moz-range-thumb {
 .mg-t-16 {
   margin-top: 16px;
 }
+.mg-t-32 {
+  margin-top: 32px;
+}
 .mg-b-0 {
   margin-bottom: var(--margin-0);
 }
@@ -631,7 +634,6 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* signup */
-
 :root {
   --login-big-font-size: var(--font-h1);
   --login-small-font-size: var(--font-main);
@@ -720,6 +722,9 @@ input[type="range"]::-moz-range-thumb {
 /* profile */
 :root {
   --profile-img-w: min(40vw, 400px);
+}
+.user-img {
+  border-radius: 50%;
 }
 .profile-img {
   width: var(--profile-img-w);

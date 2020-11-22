@@ -40,6 +40,7 @@ const Search = () => {
   if (currentUser) {
     getIDToken().then(function (token) {
       IDToken = token;
+      console.log(IDToken);
     });
   }
   
