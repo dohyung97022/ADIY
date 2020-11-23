@@ -85,7 +85,6 @@
 
   --grid-channel-w: min(30vw, 300px);
 }
-
 * {
   outline: none;
   border: none;
@@ -227,7 +226,7 @@ input[type="range"]::-moz-range-thumb {
 .flex-itm-grid {
   display: grid;
   grid-row-gap: var(--margin-0-1);
-  grid-template-columns: calc(var(--font-main)) auto auto auto;
+  grid-template-columns: var(--font-main) auto auto auto;
   grid-template-rows:
     var(--font-main) var(--font-main) var(--font-main) var(--font-main)
     var(--font-main) var(--font-main);
