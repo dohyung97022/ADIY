@@ -35,3 +35,7 @@ REACT_APP_APP_ID=""
 REACT_APP_MEASUREMENT_ID=""
 REACT_APP_BACKENDPOINT=""
 ```
+
+실제 deployment는 env를 amplify에서 지정 한다.  
+화면이 나오지 않는 문제는 env의 문제가 아니라 firebase를 init하지 않은 것에서부터 나온다.  
+ "dotenv": "^8.2.0",
