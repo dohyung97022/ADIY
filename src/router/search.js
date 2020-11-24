@@ -96,7 +96,7 @@ const Search = () => {
   useEffect(() => {
     setChannels(Loader());
     fetch(
-      `http://search.adiy.io/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
+      `https://search.adiy.io/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
       method: "GET", 
       headers: {
         "IDToken": IDToken}
