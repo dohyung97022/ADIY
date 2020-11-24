@@ -44,7 +44,7 @@
   --font-h2-fixed: 20px;
   --font-h2: min(2vw, var(--font-h2-fixed));
 
-  --font-h3-fixed: 50px;
+  --font-h3-fixed: 40px;
   --font-h3: min(6vw, var(--font-h3-fixed));
 
   --font-h4-fixed: 24px;
@@ -139,6 +139,9 @@ h4 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.txt-nowrap {
+  white-space: nowrap;
 }
 .btn-1 {
   background: none;

@@ -19,7 +19,7 @@ import { firebaseApp, getIDToken } from "../firebase/Firebase";
 
 const Search = () => {
   const query = new URLSearchParams(window.location.search).get("q");
-  const [json, setJson] = useState([]);
+  const [json, setJson] = useState({firstLoaded:true});
   const [channels, setChannels] = useState();
   const [pageButtons, setPageButtons] = useState([]);
   const { chartIntData, setChartIntData, chartStrData, setChartStrData } = useContext(GlobalContext);
@@ -95,6 +95,7 @@ const Search = () => {
   };
   useEffect(() => {
     setChannels(Loader());
+    setPageButtons();
     fetch(
       `https://search.adiy.io/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
       method: "GET", 
@@ -185,69 +186,71 @@ const Search = () => {
           } catch (e) {}
         }
         if (pushChannels.length!=0){
-          setChannels(pushChannels);
-        } else {
-          setChannels(Loader);
+          setChannels(<div className="rlt max-main-w grid-cnt grid-gap">{pushChannels}</div>);
+          if (currentUser){
+            setPageButtons((        
+              <div className="pageButtons">
+              {page>0? (        
+               <button
+                  className="btn-1 mg-b-1"
+                  onClick={() => {{setPage(page - 1);}}}>
+                  <h1>
+                    <i className="fas fa-angle-left" />
+                  </h1>
+                </button>):
+                <button className="btn-1 mg-b-1">
+                  <h1 className="c-font-3">
+                    <i className="fas fa-angle-left" />
+                  </h1>
+                </button>
+              }
+              <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
+                <h1>{page + 1}</h1>
+              </button>
+              {Object.keys(json).length==20?  
+               <button
+                  className="btn-1 mg-b-1"
+                  onClick={() => {setPage(page+1);}}>
+                  <h1>
+                    <i className="fas fa-angle-right" />
+                  </h1>
+                </button>
+                :
+                <button className="btn-1 mg-b-1">
+                  <h1 className="c-font-3">
+                    <i className="fas fa-angle-right mg-auto" />
+                  </h1>
+                </button>
+              }
+              </div>));
+          } 
+          else {
+            setPageButtons((        
+              <div className="pageButtons">
+                <button className="btn-1 mg-b-1">
+                <Link to="/signup_to_payment">
+                  <h1 className="c-font-3">
+                    <i className="fas fa-angle-left" />
+                  </h1>
+                </Link>
+                </button>
+              <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
+                <h1>{page + 1}</h1>
+              </button>
+                <button className="btn-1 mg-b-1">
+                <Link to="/signup_to_payment">
+                  <h1 className="c-font-3">
+                    <i className="fas fa-angle-right mg-auto" />
+                  </h1>
+                </Link>
+                </button>
+              </div>));
+          }
+        } else if (json.firstLoaded!=true){
+          setChannels(<h3 className="c-font-1 txt-cnt mg-t-5 mg-b-4 txt-nowrap">Sorry, No Results found</h3>);
+          setPageButtons();
         }
-        if (currentUser){
-          setPageButtons((        
-            <div className="pageButtons">
-            {page>0? (        
-             <button
-                className="btn-1 mg-b-1"
-                onClick={() => {{setPage(page - 1);}}}>
-                <h1>
-                  <i className="fas fa-angle-left" />
-                </h1>
-              </button>):
-              <button className="btn-1 mg-b-1">
-                <h1 className="c-font-3">
-                  <i className="fas fa-angle-left" />
-                </h1>
-              </button>
-            }
-            <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-              <h1>{page + 1}</h1>
-            </button>
-            {Object.keys(json).length==20?  
-             <button
-                className="btn-1 mg-b-1"
-                onClick={() => {setPage(page+1);}}>
-                <h1>
-                  <i className="fas fa-angle-right" />
-                </h1>
-              </button>
-              :
-              <button className="btn-1 mg-b-1">
-                <h1 className="c-font-3">
-                  <i className="fas fa-angle-right mg-auto" />
-                </h1>
-              </button>
-            }
-            </div>));
-        } 
-        else {
-          setPageButtons((        
-            <div className="pageButtons">
-              <button className="btn-1 mg-b-1">
-              <Link to="/signup_to_payment">
-                <h1 className="c-font-3">
-                  <i className="fas fa-angle-left" />
-                </h1>
-              </Link>
-              </button>
-            <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-              <h1>{page + 1}</h1>
-            </button>
-              <button className="btn-1 mg-b-1">
-              <Link to="/signup_to_payment">
-                <h1 className="c-font-3">
-                  <i className="fas fa-angle-right mg-auto" />
-                </h1>
-              </Link>
-              </button>
-            </div>));
-        }
+
   }, [json,chartIntData,chartStrData]);
 
   return (
@@ -280,7 +283,7 @@ const Search = () => {
         </div>
         <hr /> */}
         <div className="rlt max-main-w mg-t-2 mg-b-1">
-          <h1 className="txt-cnt c-font-1">{query}</h1>
+          <h3 className="txt-cnt c-font-1">{query}</h3>
         </div>
         <div className="rlt max-main-w flex-cnt grid-gap txt-cnt mg-t-2">
           <p
@@ -542,7 +545,7 @@ const Search = () => {
           </div>
         </div>
       </header>
-      <div className="rlt max-main-w grid-cnt grid-gap">{channels}</div>
+      {channels}
       <div className="rlt flex-cnt flex-h-cntr">
       {pageButtons}
       </div>

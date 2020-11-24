@@ -5,8 +5,8 @@
 .loader {
   position: relative;
   width: 80px;
-  margin: 30vw auto;
-  height: 10vw;
+  margin: 25vh auto;
+  /* height: 10vw; */
 }
 
 .duo {
