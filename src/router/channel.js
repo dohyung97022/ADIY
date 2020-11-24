@@ -21,7 +21,7 @@ const Channel = () => {
   const [videos, setVideos] = useState();
   const [json, setJson] = useState();
   useEffect(() => {
-    fetch("http://ec2-52-5-15-14.compute-1.amazonaws.com:3000/video?channel=" + query)
+    fetch("http://channel.adiy.io/video?channel=" + query)
       .then((res) => res.json())
       .then((json) => {
         setJson(json);

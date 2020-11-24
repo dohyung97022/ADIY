@@ -14,7 +14,7 @@ function Paypal() {
   useEffect(() => {
     if (currentUser) {
       getIDToken().then(function (token) {
-        fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
+        fetch('https://payment.adiy.io/payment', {
         method: 'POST',
         body: JSON.stringify({
           IDToken: token,
@@ -57,7 +57,7 @@ function Paypal() {
   function savePayment(subscriptionID){
     console.log(subscriptionID)
     getIDToken().then(function (token) {
-      fetch('https://wefeu9543j.execute-api.us-east-2.amazonaws.com/default/go-payment-lambda', {
+      fetch('https://payment.adiy.io/payment', {
       method: 'POST',
       body: JSON.stringify({
         IDToken: token,
