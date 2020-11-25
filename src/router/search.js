@@ -170,13 +170,12 @@ const Search = () => {
         }
         if (pushChannels.length!=0){
           setChannels(<div className="rlt max-main-w grid-cnt grid-gap">{pushChannels}</div>);
-          if (currentUser){
             setPageButtons((        
               <div className="pageButtons">
               {page>0? (        
                <button
-                  className="btn-1 mg-b-1"
-                  onClick={() => {{setPage(page - 1);}}}>
+                  className="btn-3 mg-b-1"
+                  onClick={() => {if (currentUser) {setPage(page - 1);} else {window.open("/signup_to_payment","_self");}}}>
                   <h1>
                     <i className="fas fa-angle-left" />
                   </h1>
@@ -187,13 +186,15 @@ const Search = () => {
                   </h1>
                 </button>
               }
+
               <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
                 <h1>{page + 1}</h1>
               </button>
+
               {Object.keys(json).length==20?  
                <button
-                  className="btn-1 mg-b-1"
-                  onClick={() => {setPage(page+1);}}>
+                  className="btn-3 mg-b-1"
+                  onClick={() => {if (currentUser) {setPage(page+1);} else {window.open("/signup_to_payment","_self");}}}>
                   <h1>
                     <i className="fas fa-angle-right" />
                   </h1>
@@ -206,34 +207,11 @@ const Search = () => {
                 </button>
               }
               </div>));
-          } 
-          else {
-            setPageButtons((        
-              <div className="pageButtons">
-                <button className="btn-1 mg-b-1">
-                <Link to="/signup_to_payment">
-                  <h1 className="c-font-3">
-                    <i className="fas fa-angle-left" />
-                  </h1>
-                </Link>
-                </button>
-              <button className="btn-1 mg-l-0 mg-r-0 mg-b-1">
-                <h1>{page + 1}</h1>
-              </button>
-                <button className="btn-1 mg-b-1">
-                <Link to="/signup_to_payment">
-                  <h1 className="c-font-3">
-                    <i className="fas fa-angle-right mg-auto" />
-                  </h1>
-                </Link>
-                </button>
-              </div>));
-          }
+          
         } else if (json.firstLoaded!=true){
           setChannels(<h3 className="c-font-1 txt-cnt mg-t-5 mg-b-4 txt-nowrap">Sorry, No Results found</h3>);
           setPageButtons();
         }
-
   }, [json,chartIntData,chartStrData]);
 
   return (
