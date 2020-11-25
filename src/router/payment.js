@@ -92,13 +92,18 @@ const LoginAndRegister = (
   <button className="btn-1 mg-r-2">Register</button>
   </Link></React.Fragment>)
 
-const Logout = (
-  <React.Fragment>
-  <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
-  </React.Fragment>)
-
 const Payment = () => {
   const currentUser = useContext(AuthContext);
+
+  const accountAndLogout = (
+    <>
+    <Link className="" to="/profile">
+    <img className="hdr-img mg-l-2 mg-r-1 vert-cntr user-img" src={currentUser ? currentUser.photoURL:brandImg } alt="brandImg" />
+    </Link>
+    <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+  </>
+  )
+
   var plans = [];
   for (var i = 1; i <= 1; i++) {
     var c = "bgc-b";
@@ -107,7 +112,6 @@ const Payment = () => {
     } else if (i === 3) {
       c = "bgc-o";
     }
-
     plans.push(
       <div
         className="flex-col bgc-itm pay-itm-w pay-itm-h pay-itm-bdr mg-l-1 mg-r-1 mg-b-3"
@@ -157,7 +161,7 @@ const Payment = () => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-          {(currentUser ? Logout:LoginAndRegister)}
+          {(currentUser ? accountAndLogout:LoginAndRegister)}
           </div>
         </div>
         <hr />

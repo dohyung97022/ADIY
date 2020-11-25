@@ -45,7 +45,14 @@ const Search = () => {
   <><Link to="/signin"><button className="btn-1 mg-r-2">Login</button></Link>
   <Link to="/signup"><button className="btn-1 mg-r-2">Register</button></Link></>)
 
-  const Logout = (<button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>)
+  const accountAndLogout = (
+    <>
+    <Link className="" to="/profile">
+    <img className="hdr-img mg-l-2 mg-r-1 vert-cntr user-img" src={currentUser ? currentUser.photoURL:brandImg } alt="brandImg" />
+    </Link>
+    <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
+  </>
+  )
 
   function removeChartDataIndex(i) {
     var csd = chartStrData;
@@ -225,7 +232,7 @@ const Search = () => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-          {(currentUser ? Logout:LoginAndRegister)}
+          {(currentUser ? accountAndLogout:LoginAndRegister)}
           </div>
         </div>
         <hr />

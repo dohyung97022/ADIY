@@ -55,7 +55,7 @@
 
   --radius-main-border: 4px;
 
-  --opt-height: min(7vw, 45px);
+  --opt-height: min(7.5vw, 47px);
   --input-max-width: 500px;
   --input-persentage-width: 70%;
 
@@ -82,6 +82,7 @@
 
   --main-img-h: min(27vw, 170px);
   --channel-img-h: min(20vw, 100px);
+  --main-profile-img-h: var(--font-main);
 
   --grid-channel-w: min(30vw, 300px);
 }
@@ -351,6 +352,10 @@ input[type="range"]::-moz-range-thumb {
   height: var(--main-img-h);
   width: var(--main-img-h);
 }
+.main-profile-img {
+  height: 32px;
+  width: 32px;
+}
 .cnl-img {
   height: var(--channel-img-h);
 }
@@ -388,6 +393,9 @@ input[type="range"]::-moz-range-thumb {
   flex: 0 1 auto;
 }
 /* options */
+.pd-0 {
+  padding: 0px;
+}
 .pd-t-1 {
   padding-top: var(--margin-1);
 }

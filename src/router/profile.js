@@ -19,10 +19,14 @@ const Profile = () => {
     <button className="btn-1 mg-r-2">Register</button>
     </Link></React.Fragment>)
   
-  const Logout = (
-    <React.Fragment>
+  const accountAndLogout = (
+    <>
+    <Link className="" to="/profile">
+    <img className="hdr-img mg-l-2 mg-r-1 vert-cntr user-img" src={currentUser ? currentUser.photoURL:brandImg } alt="brandImg" />
+    </Link>
     <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
-    </React.Fragment>)
+  </>
+  )
 
 function cancelPayment(){
   var r = window.confirm("Are you sure you want to cancel our subscription?");
@@ -39,7 +43,7 @@ function cancelPayment(){
         res.json()
         ).then((json) => {
         if (json["payment"]=="cancelled"){
-          alert("You have successfully cancelled subscription")
+          alert("You have successfully cancelled subscription.")
           window.open("/","_self");
         }
         console.log(json);
@@ -76,7 +80,6 @@ useEffect(() => {
   }
   }, [currentUser]);
 
-
   return (
     <React.Fragment>
       <header className="stk z-i-1">
@@ -92,7 +95,7 @@ useEffect(() => {
             <SearchBar />
           </div>
           <div className="abs abs-cntr abs-r">
-          {(currentUser ? Logout:LoginAndRegister)}
+          {(currentUser ? accountAndLogout:LoginAndRegister)}
           </div>
         </div>
         <hr />
