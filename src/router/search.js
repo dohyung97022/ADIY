@@ -32,45 +32,29 @@ const Search = () => {
   const [avrViews, setAvrViews] = useState("");
   const [totalViews, setTotalViews] = useState("");
   const [page, setPage] = useState(0);
-
   const currentUser = useContext(AuthContext);
 
   var IDToken = "";
-    
   if (currentUser) {
     getIDToken().then(function (token) {
       IDToken = token;
-      console.log(IDToken);
     });
   }
   
   const LoginAndRegister = (
-  <React.Fragment><Link to="/signin">
-  <button className="btn-1 mg-r-2">Login</button>
-  </Link>
-  <Link to="/signup">
-  <button className="btn-1 mg-r-2">Register</button>
-  </Link></React.Fragment>)
+  <><Link to="/signin"><button className="btn-1 mg-r-2">Login</button></Link>
+  <Link to="/signup"><button className="btn-1 mg-r-2">Register</button></Link></>)
 
-  const Logout = (
-    <React.Fragment>
-    <button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>
-    </React.Fragment>)
+  const Logout = (<button className="btn-1 mg-r-2" onClick={()=>{firebaseApp.auth().signOut()}}>Logout</button>)
 
   function removeChartDataIndex(i) {
     var csd = chartStrData;
     csd.splice(i, 1);
     setChartStrData([...csd]);
     
-    //setting int data
     var cid = chartIntData;
     cid.splice(i, 1);
     setChartIntData([...cid]);
-  }
-  
-  function consoleLogChartData(){
-    console.log(chartStrData);
-    console.log(chartIntData);
   }
 
   const DropDownCustom = (props) => {
@@ -97,15 +81,15 @@ const Search = () => {
     setChannels(Loader());
     setPageButtons();
     fetch(
+      // `http://localhost/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
       `https://search.adiy.io/search?search=${query}${subs}${avrViews}${totalViews}&page=${page}`,{
       method: "GET", 
       headers: {
         "IDToken": IDToken}
     })
       .then((res) => res.json())
-      .then((json) => {setJson(json); console.log(json)})
+      .then((json) => {setJson(json);})
     }, [query, subs, avrViews, totalViews, page, currentUser]);
-
 
   useEffect(() => {
         if (json["payment"]=="false"){
@@ -119,7 +103,6 @@ const Search = () => {
                 className="grid-itm bgc-itm"
                 key={i}
                 onClick={() => {
-                  consoleLogChartData();
                   if (!chartStrData.includes(json[i].title) && chartStrData.length <= 4) {
                     //setting string data
                     var csd = chartStrData;

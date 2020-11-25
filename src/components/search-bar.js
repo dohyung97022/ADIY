@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { GlobalContext } from "../../src/index";
 const SearchBar = () => {
   const { input, setInput } = useContext(GlobalContext);
-
   return (
     <div className="srch-bar flx-h-cntr flex-sp-bt">
       <input
