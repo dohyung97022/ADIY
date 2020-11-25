@@ -25,24 +25,27 @@ const Profile = () => {
     </React.Fragment>)
 
 function cancelPayment(){
-  getIDToken().then(function (token) {
-    fetch('https://payment.adiy.io/payment', {
-    method: 'POST',
-    body: JSON.stringify({
-      IDToken: token,
-      PaymentID: "",
-      Type:'cancel',
-      })
-    }).then(res => 
-      res.json()
-      ).then((json) => {
-      if (json["payment"]=="cancelled"){
-        alert("You have successfully cancelled subscription")
-        window.open("/","_self");
-      }
-      console.log(json);
-    });
-})
+  var r = window.confirm("Are you sure you want to cancel our subscription?");
+  if (r == true) {
+    getIDToken().then(function (token) {
+      fetch('https://payment.adiy.io/payment', {
+      method: 'POST',
+      body: JSON.stringify({
+        IDToken: token,
+        PaymentID: "",
+        Type:'cancel',
+        })
+      }).then(res => 
+        res.json()
+        ).then((json) => {
+        if (json["payment"]=="cancelled"){
+          alert("You have successfully cancelled subscription")
+          window.open("/","_self");
+        }
+        console.log(json);
+      });
+  })
+  }
 }
 
 useEffect(() => {
@@ -100,7 +103,7 @@ useEffect(() => {
       <h3 className="c-font-1 mg-b-3 mg-t-2">Welcome, {currentUser ? currentUser.displayName:"User"  }</h3>
         <div className="flex-col">
 
-        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-2">Business Proposal</h1>
+        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-2">Business Proposals</h1>
         <h1 className="mg-t-1 c-font-3">Coming Soon!</h1>
         <img className="profile-img mg-b-1 mg-t-1" src={BuisinessProposal} alt="brandImg" />
         <p className="mg-b-1">Check out our suggestions for business proposals. And create one as you wish.</p>
