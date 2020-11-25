@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext,useEffect,useState} from "react";
 import { Link } from "react-router-dom";
 import brandImg from "../img/brand.png";
 import BuisinessProposal from "../img/buisiness-proposal.png";
@@ -10,7 +10,7 @@ import { AuthContext } from "../firebase/FirebaseContext";
 
 const Profile = () => {
   const currentUser = useContext(AuthContext);
-
+  const [paymentCancelButton, setPaymentCancelButton] = useState();
   const LoginAndRegister = (
     <React.Fragment><Link to="/signin">
     <button className="btn-1 mg-r-2">Login</button>
@@ -45,6 +45,35 @@ function cancelPayment(){
 })
 }
 
+useEffect(() => {
+  if (!currentUser) {window.open("/","_self");}
+  else {
+    getIDToken().then(function (token) {
+      fetch('https://payment.adiy.io/payment', {
+      method: 'POST',
+      body: JSON.stringify({
+        IDToken: token,
+        PaymentID: '',
+        Type:'check',
+        })
+      }).then(res => 
+        res.json()
+        ).then((json) => {
+        if (json["payment"]=="true"){
+          setPaymentCancelButton(
+            <button className="btn-4 mg-b-2" onClick={()=>{cancelPayment()}}>
+            <h1 className="mg-t-1 c-font-3">Cancel Payment</h1>
+            <img className="profile-img mg-b-1 mg-t-1" src={PaymentMethod} alt="brandImg" />
+            <p className="mg-b-1">Cancel your payment information.</p>
+            </button>
+          )
+        }
+      });
+    })
+  }
+  }, [currentUser]);
+
+
   return (
     <React.Fragment>
       <header className="stk z-i-1">
@@ -71,27 +100,23 @@ function cancelPayment(){
       <h3 className="c-font-1 mg-b-3 mg-t-2">Welcome, {currentUser ? currentUser.displayName:"User"  }</h3>
         <div className="flex-col">
 
-        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-3">Business Proposal</h1>
+        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-2">Business Proposal</h1>
+        <h1 className="mg-t-1 c-font-3">Coming Soon!</h1>
         <img className="profile-img mg-b-1 mg-t-1" src={BuisinessProposal} alt="brandImg" />
         <p className="mg-b-1">Check out our suggestions for business proposals. And create one as you wish.</p>
         </button>
 
-        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-3">Save Channels</h1>
+        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-2">Saved Channels</h1>
+        <h1 className="mg-t-1 c-font-3">Coming Soon!</h1>
         <img className="profile-img mg-b-1 mg-t-1" src={SaveChannels} alt="brandImg" />
-        <p className="mg-b-1">Save and group channels as much as you like!</p>
+        <p className="mg-b-1">Saved and group channels as much as you like!</p>
         </button>
-
-        <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-3">Payment Information</h1>
+        {/* <button className="btn-4 mg-b-2"><h1 className="mg-t-1 c-font-2">Payment Information</h1>
+        <h1 className="mg-t-1 c-font-3">Coming Soon!</h1>
         <img className="profile-img mg-b-1 mg-t-1" src={PaymentMethod} alt="brandImg" />
         <p className="mg-b-1">Check your payment information.</p>
-        </button>
-
-        <button className="btn-4 mg-b-2" onClick={()=>{cancelPayment()}}>
-        <h1 className="mg-t-1 c-font-3">Cancel Payment</h1>
-        <img className="profile-img mg-b-1 mg-t-1" src={PaymentMethod} alt="brandImg" />
-        <p className="mg-b-1">Cancel your payment information.</p>
-        </button>
-
+        </button> */}
+        {paymentCancelButton}
         </div>
       </div>
     </React.Fragment>

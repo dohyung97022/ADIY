@@ -69,7 +69,7 @@ function Paypal() {
         ).then((json) => {
         if (json["payment"]=="saved"){
           alert("You have successfully created subscription")
-          window.open("/","_self");
+          window.open("/profile","_self");
         }
         console.log(json);
       });
@@ -116,7 +116,7 @@ const Payment = () => {
         <h3
           className={"txt-cnt c-font-2 pd-t-2 pd-b-2 flex-cnt flex-h-cntr " + c}
         >
-          17$ / Month
+          6$ / Month
         </h3>
         <div className="flex-row mg-t-1 mg-b-1">
           <div className="pay-itm-l mg-auto">
